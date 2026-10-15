@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Options · Trading UI</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #0b0f15;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Main trading dashboard */
+    .trading-dashboard {
+      max-width: 1360px;
+      width: 100%;
+      background: #10161e;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      background: linear-gradient(145deg, #2a3b4c, #1a2532);
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.6);
+    }
+
+    .logo-icon i {
+      font-size: 24px;
+      color: #f0b90b;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+    }
+
+    .logo-text span {
+      color: #f0b90b;
+    }
+
+    .account-balance {
+      background: #1a232e;
+      border-radius: 40px;
+      padding: 8px 18px 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #2b3645;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.02);
+    }
+
+    .account-balance i {
+      color: #f0b90b;
+      font-size: 18px;
+    }
+
+    .balance-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .balance-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #8598aa;
+      font-weight: 600;
+    }
+
+    .balance-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.2px;
+    }
+
+    .balance-value small {
+      font-size: 12px;
+      font-weight: 500;
+      color: #8598aa;
+      margin-left: 3px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1a232e;
+      padding: 6px 16px 6px 12px;
+      border-radius: 40px;
+      border: 1px solid #2b3645;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #f0b90b, #d69e0c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #10161e;
+      font-size: 16px;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* Main grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    /* Chart panel */
+    .chart-panel {
+      background: #0d1219;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid #1e2836;
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .asset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .asset-pair {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pair-icon {
+      background: #1f2a37;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #f0b90b;
+    }
+
+    .pair-info h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .pair-info .pair-sub {
+      font-size: 12px;
+      color: #7f8f9f;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #26a69a;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px #26a69a;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    .price-display {
+      text-align: right;
+    }
+
+    .current-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .price-change {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .positive {
+      color: #26a69a;
+    }
+
+    .negative {
+      color: #ef5350;
+    }
+
+    /* Chart area */
+    .chart-container {
+      position: relative;
+      height: 280px;
+      background: #0b1017;
+      border-radius: 18px;
+      padding: 12px 8px 8px 8px;
+      border: 1px solid #1f2937;
+      overflow: hidden;
+    }
+
+    .chart-bg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* SVG Chart */
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-grid line {
+      stroke: #1e2a38;
+      stroke-width: 1;
+      stroke-dasharray: 3 5;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke: #f0b90b;
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 6px rgba(240, 185, 11, 0.4));
+    }
+
+    .chart-area {
+      fill: url(#gradientArea);
+      opacity: 0.25;
+    }
+
+    .chart-dot {
+      fill: #f0b90b;
+      stroke: #10161e;
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 8px #f0b90b);
+    }
+
+    .price-tag {
+      position: absolute;
+      right: 12px;
+      background: #1a232e;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #f0b90b;
+      border: 1px solid #f0b90b33;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Timer row */
+    .timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0b1017;
+      border-radius: 16px;
+      padding: 10px 18px;
+      border: 1px solid #1f2937;
+    }
+
+    .timer-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #98a9b9;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .timer-label i {
+      color: #f0b90b;
+      font-size: 16px;
+    }
+
+    .timer-display {
+      background: #1a232e;
+      border-radius: 30px;
+      padding: 6px 24px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: white;
+      font-variant-numeric: tabular-nums;
+      border: 1px solid #2b3645;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .timer-display span {
+      color: #f0b90b;
+    }
+
+    /* Trade controls (right panel) */
+    .trade-panel {
+      background: #0d1219;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid #1e2836;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #b0c1d0;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title i {
+      color: #f0b90b;
+    }
+
+    .amount-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .amount-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #7f8f9f;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .amount-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #1a232e;
+      border-radius: 14px;
+      padding: 6px 6px 6px 18px;
+      border: 1px solid #2b3645;
+    }
+
+    .amount-input-wrapper i {
+      color: #f0b90b;
+      margin-right: 12px;
+      font-size: 18px;
+    }
+
+    .amount-input-wrapper input {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      width: 100%;
+      outline: none;
+      letter-spacing: -0.5px;
+    }
+
+    .amount-input-wrapper input::placeholder {
+      color: #4d5e6e;
+    }
+
+    .amount-presets {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .preset-btn {
+      background: #1a232e;
+      border: 1px solid #2b3645;
+      color: #b0c1d0;
+      font-weight: 600;
+      padding: 8px 0;
+      border-radius: 10px;
+      flex: 1;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preset-btn:hover {
+      background: #24303e;
+      border-color: #f0b90b55;
+      color: white;
+    }
+
+    .preset-btn.active {
+      background: #f0b90b;
+      color: #10161e;
+      border-color: #f0b90b;
+      font-weight: 700;
+    }
+
+    .payout-info {
+      display: flex;
+      justify-content: space-between;
+      background: #0b1017;
+      padding: 12px 18px;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
+    }
+
+    .payout-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .payout-label {
+      font-size: 11px;
+      color: #7f8f9f;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .payout-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .payout-value.green {
+      color: #26a69a;
+    }
+
+    .trade-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .btn-trade {
+      flex: 1;
+      padding: 18px 0;
+      border-radius: 18px;
+      border: none;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-trade:active {
+      transform: scale(0.97);
+    }
+
+    .btn-call {
+      background: #26a69a;
+      color: white;
+      box-shadow: 0 8px 18px -6px #26a69a80;
+    }
+
+    .btn-call:hover {
+      background: #2eb8aa;
+      box-shadow: 0 12px 24px -8px #26a69a;
+    }
+
+    .btn-put {
+      background: #ef5350;
+      color: white;
+      box-shadow: 0 8px 18px -6px #ef535080;
+    }
+
+    .btn-put:hover {
+      background: #f26a67;
+      box-shadow: 0 12px 24px -8px #ef5350;
+    }
+
+    /* Open positions */
+    .positions-section {
+      background: #0d1219;
+      border-radius: 24px;
+      padding: 16px 20px;
+      border: 1px solid #1e2836;
+    }
+
+    .positions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .positions-header h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #b0c1d0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge {
+      background: #1e2a38;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #f0b90b;
+    }
+
+    .position-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0b1017;
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border-left: 4px solid;
+      transition: background 0.15s;
+    }
+
+    .position-item.call {
+      border-left-color: #26a69a;
+    }
+
+    .position-item.put {
+      border-left-color: #ef5350;
+    }
+
+    .position-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .position-pair {
+      font-weight: 700;
+      color: white;
+      font-size: 15px;
+    }
+
+    .position-details {
+      display: flex;
+      gap: 14px;
+      font-size: 12px;
+      color: #7f8f9f;
+    }
+
+    .position-amount {
+      font-weight: 700;
+      color: white;
+      font-size: 16px;
+    }
+
+    .position-result {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .result-win {
+      color: #26a69a;
+    }
+
+    .result-lose {
+      color: #ef5350;
+    }
+
+    /* responsive */
+    @media (max-width: 1050px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .trade-panel {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .trading-dashboard {
+        padding: 16px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .asset-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .price-display {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="trading-dashboard">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="logo-text">Binary<span>Flow</span></div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div class="account-balance">
+          <i class="fas fa-wallet"></i>
+          <div class="balance-info">
+            <span class="balance-label">Balance</span>
+            <span class="balance-value">$8,240<small>USD</small></span>
+          </div>
+        </div>
+        <div class="user-profile">
+          <div class="avatar">JD</div>
+          <span class="user-name">John D.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="main-grid">
+      <!-- Chart panel -->
+      <div class="chart-panel">
+        <div class="asset-header">
+          <div class="asset-pair">
+            <div class="pair-icon">₿</div>
+            <div class="pair-info">
+              <h2>BTC / USD</h2>
+              <div class="pair-sub">
+                <span class="live-dot"></span> Live · Binary option
+              </div>
+            </div>
+          </div>
+          <div class="price-display">
+            <div class="current-price" id="currentPrice">$63,842.50</div>
+            <div class="price-change positive" id="priceChange">
+              <i class="fas fa-arrow-up"></i> +1.24%
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart container with SVG -->
+        <div class="chart-container">
+          <div class="chart-bg">
+            <svg class="chart-svg" viewBox="0 0 800 280" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f0b90b" stop-opacity="0.4" />
+                  <stop offset="100%" stop-color="#f0b90b" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <!-- grid lines -->
+              <g class="chart-grid">
+                <line x1="0" y1="40" x2="800" y2="40" />
+                <line x1="0" y1="90" x2="800" y2="90" />
+                <line x1="0" y1="140" x2="800" y2="140" />
+                <line x1="0" y1="190" x2="800" y2="190" />
+                <line x1="0" y1="240" x2="800" y2="240" />
+                <line x1="120" y1="0" x2="120" y2="280" />
+                <line x1="260" y1="0" x2="260" y2="280" />
+                <line x1="400" y1="0" x2="400" y2="280" />
+                <line x1="540" y1="0" x2="540" y2="280" />
+                <line x1="680" y1="0" x2="680" y2="280" />
+              </g>
+              <!-- area under line -->
+              <path class="chart-area" d="M0,200 L40,190 L90,170 L140,165 L190,140 L240,150 L290,120 L340,110 L390,90 L440,95 L490,70 L540,60 L590,45 L640,50 L690,30 L740,28 L800,25 L800,280 L0,280 Z" />
+              <!-- main chart line -->
+              <path class="chart-line" d="M0,200 L40,190 L90,170 L140,165 L190,140 L240,150 L290,120 L340,110 L390,90 L440,95 L490,70 L540,60 L590,45 L640,50 L690,30 L740,28 L800,25" />
+              <!-- current price dot -->
+              <circle class="chart-dot" cx="800" cy="25" r="6" />
+            </svg>
+            <!-- price tag overlay -->
+            <div class="price-tag" style="top: 8px; right: 16px;">$63,842.50</div>
+          </div>
+        </div>
+
+        <!-- Timer row -->
+        <div class="timer-row">
+          <div class="timer-label">
+            <i class="fas fa-hourglass-half"></i> Expiry time
+          </div>
+          <div class="timer-display" id="timerDisplay">00:<span>15</span></div>
+        </div>
+      </div>
+
+      <!-- Trade panel (right) -->
+      <div class="trade-panel">
+        <div class="panel-title">
+          <i class="fas fa-bolt"></i> Place trade
+        </div>
+
+        <div class="amount-selector">
+          <div class="amount-label">Investment amount</div>
+          <div class="amount-input-wrapper">
+            <i class="fas fa-dollar-sign"></i>
+            <input type="text" id="tradeAmount" value="100" inputmode="numeric">
+          </div>
+          <div class="amount-presets">
+            <button class="preset-btn active" data-amount="100">$100</button>
+            <button class="preset-btn" data-amount="250">$250</button>
+            <button class="preset-btn" data-amount="500">$500</button>
+            <button class="preset-btn" data-amount="1000">$1000</button>
+          </div>
+        </div>
+
+        <div class="payout-info">
+          <div class="payout-item">
+            <span class="payout-label">Payout</span>
+            <span class="payout-value green" id="payoutValue">87%</span>
+          </div>
+          <div class="payout-item">
+            <span class="payout-label">Potential profit</span>
+            <span class="payout-value green" id="profitValue">+$87.00</span>
+          </div>
+        </div>
+
+        <div class="trade-buttons">
+          <button class="btn-trade btn-call" id="callBtn">
+            <i class="fas fa-arrow-up"></i> CALL
+          </button>
+          <button class="btn-trade btn-put" id="putBtn">
+            <i class="fas fa-arrow-down"></i> PUT
+          </button>
+        </div>
+
+        <!-- Open positions mini section -->
+        <div style="margin-top: 4px;">
+          <div class="positions-header" style="margin-bottom: 10px;">
+            <h4><i class="fas fa-list-ul" style="margin-right: 6px; color: #f0b90b;"></i> Open positions</h4>
+            <span class="badge" id="openCount">2</span>
+          </div>
+
+          <div id="positionsList">
+            <div class="position-item call" data-id="1">
+              <div class="position-info">
+                <span class="position-pair">BTC/USD · CALL</span>
+                <div class="position-details">
+                  <span>Strike: $63,750</span>
+                  <span>Exp: 00:12</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="position-amount">$100</div>
+                <div class="position-result result-win">+$87.00</div>
+              </div>
+            </div>
+            <div class="position-item put" data-id="2">
+              <div class="position-info">
+                <span class="position-pair">BTC/USD · PUT</span>
+                <div class="position-details">
+                  <span>Strike: $63,900</span>
+                  <span>Exp: 00:34</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="position-amount">$250</div>
+                <div class="position-result result-lose">-$250.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---- DOM elements ----
+      const timerDisplay = document.getElementById('timerDisplay');
+      const currentPriceEl = document.getElementById('currentPrice');
+      const priceChangeEl = document.getElementById('priceChange');
+      const tradeAmountInput = document.getElementById('tradeAmount');
+      const payoutValueEl = document.getElementById('payoutValue');
+      const profitValueEl = document.getElementById('profitValue');
+      const presetBtns = document.querySelectorAll('.preset-btn');
+      const callBtn = document.getElementById('callBtn');
+      const putBtn = document.getElementById('putBtn');
+      const positionsList = document.getElementById('positionsList');
+      const openCount = document.getElementById('openCount');
+
+      // ---- Initial state ----
+      let currentPrice = 63842.50;
+      let secondsLeft = 15;
+      let timerInterval = null;
+
+      // ---- helper: update payout & profit from amount ----
+      function updateProfitDisplay() {
+        const amount = parseFloat(tradeAmountInput.value) || 0;
+        const payoutPercent = 87; // fixed payout
+        const profit = (amount * payoutPercent / 100).toFixed(2);
+        payoutValueEl.textContent = payoutPercent + '%';
+        profitValueEl.textContent = '+$' + profit;
+      }
+
+      // ---- amount input handler ----
+      tradeAmountInput.addEventListener('input', function(e) {
+        // Remove non-numeric except decimal
+        let val = e.target.value.replace(/[^0-9.]/g, '');
+        if (val === '') val = '0';
+        const num = parseFloat(val);
+        if (!isNaN(num)) {
+          e.target.value = Math.min(10000, Math.max(10, num)).toFixed(0);
+        } else {
+          e.target.value = '100';
+        }
+        // remove active class from presets
+        presetBtns.forEach(btn => btn.classList.remove('active'));
+        updateProfitDisplay();
+      });
+
+      // ---- preset buttons ----
+      presetBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          presetBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const amount = this.dataset.amount;
+          tradeAmountInput.value = amount;
+          updateProfitDisplay();
+        });
+      });
+
+      // ---- timer countdown ----
+      function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          if (secondsLeft <= 0) {
+            secondsLeft = 15; // reset for demo
+          } else {
+            secondsLeft--;
+          }
+          const secs = secondsLeft < 10 ? '0' + secondsLeft : secondsLeft;
+          timerDisplay.innerHTML = `00:<span>${secs}</span>`;
+        }, 1000);
+      }
+
+      // ---- price tick simulation ----
+      function simulatePriceTick() {
+        // Random small change between -0.5% and +0.5%
+        const changePercent = (Math.random() - 0.5) * 1.6;
+        const changeAmount = currentPrice * changePercent / 100;
+        currentPrice += changeAmount;
+        // Round to 2 decimals
+        currentPrice = Math.round(currentPrice * 100) / 100;
+
+        // Update price display
+        currentPriceEl.textContent = '$' + currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Update change indicator
+        const changeValue = (changePercent).toFixed(2);
+        const isPositive = changePercent >= 0;
+        priceChangeEl.className = `price-change ${isPositive ? 'positive' : 'negative'}`;
+        priceChangeEl.innerHTML = `<i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i> ${isPositive ? '+' : ''}${changeValue}%`;
+
+        // Also update the SVG chart dot and price tag position (simple visual)
+        const svgDot = document.querySelector('.chart-dot');
+        const priceTag = document.querySelector('.price-tag');
+        if (svgDot && priceTag) {
+          // map price to y-coordinate: price range roughly 60000-68000 -> y from 200 to 20
+          const minPrice = 60000, maxPrice = 68000;
+          let y = 200 - ((currentPrice - minPrice) / (maxPrice - minPrice)) * 180;
+          y = Math.min(220, Math.max(20, y));
+          svgDot.setAttribute('cy', y);
+          // also move the line endpoint (just for visual)
+          const chartLine = document.querySelector('.chart-line');
+          const chartArea = document.querySelector('.chart-area');
+          // update the last point (simplified)
+          // we keep it simple - just move dot and tag
+          priceTag.style.top = (y - 10) + 'px';
+          priceTag.textContent = '$' + currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      }
+
+      // ---- trade action ----
+      function placeTrade(type) {
+        const amount = parseFloat(tradeAmountInput.value) || 100;
+        const payoutPercent = 87;
+        const profit = (amount * payoutPercent / 100).toFixed(2);
+        const positionId = Date.now() + Math.floor(Math.random() * 1000);
+
+        const newPosition = document.createElement('div');
+        newPosition.className = `position-item ${type}`;
+        newPosition.dataset.id = positionId;
+
+        const strikePrice = currentPrice.toFixed(2);
+        const expirySeconds = 15 + Math.floor(Math.random() * 25);
+
+        const resultClass = type === 'call' ? 'result-win' : 'result-lose';
+        const resultText = type === 'call' ? `+$${profit}` : `-$${amount.toFixed(2)}`;
+
+        newPosition.innerHTML = `
+          <div class="position-info">
+            <span class="position-pair">BTC/USD · ${type.toUpperCase()}</span>
+            <div class="position-details">
+              <span>Strike: $${strikePrice}</span>
+              <span>Exp: 00:${expirySeconds < 10 ? '0' + expirySeconds : expirySeconds}</span>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div class="position-amount">$${amount.toFixed(2)}</div>
+            <div class="position-result ${resultClass}">${resultText}</div>
+          </div>
+        `;
+
+        // insert at top
+        positionsList.prepend(newPosition);
+
+        // update count
+        const positions = positionsList.querySelectorAll('.position-item');
+        openCount.textContent = positions.length;
+
+        // keep max 5 positions
+        if (positions.length > 5) {
+          positionsList.removeChild(positions[positions.length - 1]);
+          openCount.textContent = positionsList.querySelectorAll('.position-item').length;
+        }
+
+        // animate button feedback
+        if (type === 'call') {
+          callBtn.style.transform = 'scale(0.95)';
+          setTimeout(() => callBtn.style.transform = '', 120);
+        } else {
+          putBtn.style.transform = 'scale(0.95)';
+          setTimeout(() => putBtn.style.transform = '', 120);
+        }
+      }
+
+      // ---- event listeners for trade buttons ----
+      callBtn.addEventListener('click', () => placeTrade('call'));
+      putBtn.addEventListener('click', () => placeTrade('put'));
+
+      // ---- initial update ----
+      updateProfitDisplay();
+      startTimer();
+
+      // simulate price ticks every 1.8 seconds (realistic)
+      setInterval(simulatePriceTick, 1800);
+
+      // Also update timer based on seconds
+      setInterval(() => {
+        // optional: refresh expiry display on open positions (just visual)
+      }, 1000);
+
+      // Initial position list dummy adaptation (set count)
+      openCount.textContent = positionsList.querySelectorAll('.position-item').length;
+
+      // Sync strike prices on existing positions (just for demo)
+      // nothing else
+    })();
+  </script>
+</body>
+</html>
